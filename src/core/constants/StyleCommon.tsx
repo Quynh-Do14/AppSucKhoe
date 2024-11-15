@@ -9,6 +9,7 @@ export enum Color {
     greyOpacityBackground = "#F9FAFB",
     opacityBackground = "#ffffff32",
     blueBackground = "#D0F5FF",
+    darkBlueBackground = "#407CE2",
 
     lightBorder = "#ccc",
     lightText = "#F6F7F8",
@@ -26,6 +27,9 @@ export enum Color {
 }
 
 export enum FontSize {
+    fontXXXLarge = 36,
+    fontXXLarge = 32,
+    fontXLarge = 28,
     fontLarge = 24,
     fontMedium = 20,
     fontSmall = 16,

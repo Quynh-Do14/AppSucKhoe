@@ -1,7 +1,7 @@
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Color, FontSize } from '../../core/constants/StyleCommon'
-import InpuSearchCommon from '../../infrastructure/components/input/input-search'
+import HealthCard from './healthCard'
 
 const HomeScreen = () => {
     return (
@@ -20,13 +20,7 @@ const HomeScreen = () => {
                         <Image source={require("../../assets/images/homeImg.png")} />
                     </View>
                 </View>
-                <View style={styles.content}>
-                    <InpuSearchCommon
-                        placeholder={'Tìm kiếm bác sĩ'}
-                        value={''}
-                        onChangeText={() => { }}
-                        onSubmitEditing={() => { }} />
-                </View>
+                <HealthCard />
             </ScrollView>
         </View>
     )

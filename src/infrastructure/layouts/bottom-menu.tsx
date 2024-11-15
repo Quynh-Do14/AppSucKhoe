@@ -15,8 +15,8 @@ const BottomMenu = () => {
                 headerShown: false,
                 tabBarShowLabel: false,
                 tabBarStyle: {
-                    backgroundColor: Color.darkBackground,
-                    borderColor: Color.darkBackground,
+                    backgroundColor: Color.lightBackground,
+                    borderColor: Color.lightBackground,
                 },
             }}
         >
@@ -33,7 +33,7 @@ const BottomMenu = () => {
                                         <Ionicons
                                             name={focused ? it.focused : it.unFocused}
                                             size={FontSize.fontLarge}
-                                            color={focused ? Color.greenText : Color.backgroundBtn}
+                                            color={focused ? Color.darkBlueBackground : Color.lightBorder}
                                         />
                                     )
                                 },

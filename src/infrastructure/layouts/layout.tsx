@@ -73,7 +73,7 @@ export default MainLayout
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: Color.darkBackground,
+        backgroundColor: Color.lightBackground,
         paddingVertical: 20,
         flex: 1,
     },
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
         flexDirection: "column",
     },
     textTitle: {
-        color: Color.lightText,
+        color: Color.blackText,
         textAlign: "center",
         fontWeight: "600",
         fontSize: FontSize.fontSmall,

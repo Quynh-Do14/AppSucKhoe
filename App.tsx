@@ -29,6 +29,7 @@ const StackNavigator = () => {
       />
       <Stack.Screen name={"LoginScreen"} component={LoginScreen} />
       <Stack.Screen name={"RegisterScreen"} component={RegisterScreen } />
+      
 
     </Stack.Navigator>
   );
