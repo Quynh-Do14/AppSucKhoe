@@ -23,7 +23,7 @@ const ProfileScreen = ({ navigation }: any) => {
             },
             {
                 text: 'Đăng xuất', onPress: () => {
-
+                    navigation.navigate("LoginScreen")
                 },
             }
         ]);
@@ -44,7 +44,7 @@ const ProfileScreen = ({ navigation }: any) => {
                         <Ionicons
                             name={"log-out-outline"}
                             size={FontSize.fontSmall}
-                            color={Color.lightSubText}
+                            color={Color.darkBlueBackground}
                         />
                         <Text style={styles.labelTouch}>Đăng xuất</Text>
                     </TouchableOpacity>
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
 
     },
     userName: {
-        fontSize: FontSize.fontMedium,
+        fontSize: FontSize.fontSmall,
         color: Color.blackText,
         fontFamily: FONTS.Light
     },
@@ -94,13 +94,13 @@ const styles = StyleSheet.create({
         alignItems: "center",
         gap: 16,
         borderBottomWidth: 1,
-        borderColor: Color.borderInput,
+        borderColor: Color.blueText,
         paddingVertical: 16,
         fontFamily: FONTS.Light
     },
     labelTouch: {
         fontSize: FontSize.fontSmall,
-        color: Color.blackText,
+        color: Color.darkBlueBackground,
         fontWeight: "bold",
         fontFamily: FONTS.Light
     },

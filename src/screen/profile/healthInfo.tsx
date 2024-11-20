@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { Color } from '../../core/constants/StyleCommon';
 const HealthInfo = () => {
     return (
         <View style={styles.container}>
             <View style={styles.infoBox}>
-                <FontAwesome5 name="heartbeat" size={24} color="#3a86ff" />
+                <FontAwesome5 name="heartbeat" size={24} color={Color.darkBlueBackground} />
                 <Text style={styles.label}>Heart rate</Text>
                 <Text style={styles.value}>215bpm</Text>
             </View>
@@ -13,7 +14,7 @@ const HealthInfo = () => {
             <View style={styles.separator} />
 
             <View style={styles.infoBox}>
-                <FontAwesome5 name="fire" size={24} color="#3a86ff" />
+                <FontAwesome5 name="fire" size={24} color={Color.darkBlueBackground} />
                 <Text style={styles.label}>Calories</Text>
                 <Text style={styles.value}>756cal</Text>
             </View>
@@ -21,7 +22,7 @@ const HealthInfo = () => {
             <View style={styles.separator} />
 
             <View style={styles.infoBox}>
-                <FontAwesome5 name="weight" size={24} color="#3a86ff" />
+                <FontAwesome5 name="weight" size={24} color={Color.darkBlueBackground} />
                 <Text style={styles.label}>Weight</Text>
                 <Text style={styles.value}>103lbs</Text>
             </View>
@@ -32,7 +33,7 @@ const HealthInfo = () => {
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        backgroundColor: '#f1f5ff',
+        backgroundColor: Color.blueBackground,
         borderRadius: 10,
         padding: 10,
         justifyContent: 'space-around',
