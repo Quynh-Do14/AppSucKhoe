@@ -73,8 +73,8 @@ export default MainLayout
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: Color.lightBackground,
-        paddingVertical: 12,
+        backgroundColor: "#F7FAFE",
+        paddingTop: 12,
         flex: 1,
     },
     content: {

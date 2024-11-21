@@ -1,17 +1,18 @@
-import { Alert, Image, Keyboard, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
-import React, { useRef, useState } from 'react'
-import { Color, FontSize } from '../../core/constants/StyleCommon';
 import { useNavigation } from '@react-navigation/native';
-import InputTextCommon from '../../infrastructure/components/input/input-text-common';
-import InputPasswordCommon from '../../infrastructure/components/input/input-password-common';
-import ButtonCommon from '../../infrastructure/components/button/button-common';
-import LoadingFullScreen from '../../infrastructure/components/controls/loading';
+import React, { useRef, useState } from 'react';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { Color } from '../../core/constants/StyleCommon';
 
 const RegisterScreen = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [_data, _setData] = useState<any>({});
     const [validate, setValidate] = useState<any>({});
     const [submittedTime, setSubmittedTime] = useState<any>(null);
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [rememberMe, setRememberMe] = useState(false);
     const navigation = useNavigation<any>()
 
     const dataProfile = _data;
@@ -35,175 +36,214 @@ const RegisterScreen = () => {
     };
 
     const secondInputRef = useRef<TextInput>(null);
-    const thirdInputRef = useRef<TextInput>(null);
 
     const handleSubmitFirstInput = () => {
         secondInputRef.current?.focus();
     };
-    const handleSubmitSecondInput = () => {
-        thirdInputRef.current?.focus();
-    };
 
-    const onRegisterAsync = async () => {
-        await setSubmittedTime(Date.now());
-        // if (isValidData()) {
-        //     try {
-        //         await authService.register(
-        //             {
-        //                 email: dataProfile.email,
-        //                 password: dataProfile.password,
-        //                 full_name: dataProfile.full_name,
-        //                 phone_number: dataProfile.phone_number,
-        //             },
-        //             setLoading,
-        //         ).then((response) => {
-        //             if (response) {
-        //                 navigation.navigate("LoginScreen")
-        //             }
-        //         });
-        //     } catch (error) {
-        //         console.error(error);
-        //     }
-        // }
+    const onLoginAsync = async () => {
+        navigation.navigate("BottomMenu")
     }
 
     return (
         <View style={styles.container}>
-            <View style={styles.logo}>
-                {/* <Image source={require("../../assets/images/icon.png")} /> */}
-                <Text style={styles.fontLogo}>Healthcare App</Text>
+            {/* Logo */}
+            {/* <View style={styles.logoContainer}>
+                <Image source={require('../../assets/images/logo.png')} />
+            </View> */}
+
+            {/* Title */}
+            <Text style={styles.title}>Create your account</Text>
+
+            {/* Email Input */}
+            <TextInput
+                style={styles.input}
+                placeholder="Name"
+                placeholderTextColor="#aaa"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+            />
+
+            <TextInput
+                style={styles.input}
+                placeholder="Email"
+                placeholderTextColor="#aaa"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+            />
+
+            {/* Password Input */}
+            <TextInput
+                style={styles.input}
+                placeholder="Password"
+                placeholderTextColor="#aaa"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+            />
+
+            <TextInput
+                style={styles.input}
+                placeholder="Confirm Password"
+                placeholderTextColor="#aaa"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+            />
+
+            {/* Remember Me and Forgot Password */}
+            <View style={styles.row}>
+                <TouchableOpacity
+                    style={styles.rememberMeContainer}
+                    onPress={() => setRememberMe(!rememberMe)}
+                >
+                    <View style={[styles.checkbox, rememberMe && styles.checkboxSelected]} />
+                    <Text style={styles.signUpText}>
+                        I understood the?{' '}
+                        <Text style={styles.signUpLink}> terms & policy</Text>
+                    </Text>
+                </TouchableOpacity>
+
             </View>
-            <KeyboardAvoidingView behavior='padding'>
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View style={{ flexDirection: "column", gap: 12 }}>
-                        <InputTextCommon
-                            label={"Email"}
-                            attribute={"email"}
-                            dataAttribute={dataProfile.email}
-                            isRequired={false}
-                            setData={setDataProfile}
-                            editable={true}
-                            validate={validate}
-                            setValidate={setValidate}
-                            submittedTime={submittedTime}
-                            onSubmitEditing={handleSubmitFirstInput}
-                        />
-                        <InputTextCommon
-                            label={"Họ và tên"}
-                            attribute={"full_name"}
-                            dataAttribute={dataProfile.full_name}
-                            isRequired={false}
-                            setData={setDataProfile}
-                            editable={true}
-                            validate={validate}
-                            setValidate={setValidate}
-                            submittedTime={submittedTime}
-                            onSubmitEditing={handleSubmitFirstInput}
-                        />
-                        <InputTextCommon
-                            label={"Số điện thoại"}
-                            attribute={"phone_number"}
-                            dataAttribute={dataProfile.phone_number}
-                            isRequired={false}
-                            setData={setDataProfile}
-                            editable={true}
-                            validate={validate}
-                            setValidate={setValidate}
-                            submittedTime={submittedTime}
-                            onSubmitEditing={handleSubmitFirstInput}
-                        />
-                        <InputPasswordCommon
-                            label={"Mật khẩu"}
-                            attribute={"password"}
-                            dataAttribute={dataProfile.password}
-                            isRequired={false}
-                            setData={setDataProfile}
-                            validate={validate}
-                            setValidate={setValidate}
-                            submittedTime={submittedTime}
-                            inputRef={secondInputRef}
-                            onSubmitEditing={handleSubmitSecondInput}
-                        />
 
-                        <View style={{
-                            flexDirection: "row",
-                            justifyContent: "flex-end",
-                            paddingVertical: 2
-                        }}></View>
-                        <ButtonCommon
-                            title={'Đăng kí'}
-                            onPress={onRegisterAsync}
-                        />
-                    </View>
-                </TouchableWithoutFeedback>
-            </KeyboardAvoidingView>
+            {/* Sign In Button */}
+            <TouchableOpacity style={styles.signInButton}>
+                <Text style={styles.signInButtonText}>Sign In</Text>
+            </TouchableOpacity>
 
+            {/* Social Sign In */}
+            <Text style={styles.orText}>or sign in with</Text>
+            <View style={styles.socialContainer}>
+                <TouchableOpacity style={styles.socialButton}>
+                    <Icon name="logo-google" size={24} color="#DB4437" />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.socialButton}>
+                    <Icon name="logo-apple" size={24} color="#000" />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.socialButton}>
+                    <Icon name="logo-facebook" size={24} color="#4267B2" />
+                </TouchableOpacity>
+            </View>
+
+            {/* Sign Up */}
             <TouchableOpacity
-                onPress={() => navigation.navigate("LoginScreen")}
-                style={{
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    gap: 4
-                }}>
-                <Text
-                    style={{
-                        color: Color.blackText,
-                        fontSize: FontSize.fontXSmall
-                    }}>Bạn đã có tài khoản?
-                </Text>
-                <Text
-                    style={{
-                        color: Color.blueText,
-                        fontSize: FontSize.fontXSmall
-                    }}>Đăng nhập
+                onPress={() => navigation.navigate("LoginScreen")}>
+                <Text style={styles.signUpText}>
+                    Don’t have an account?{' '}
+                    <Text style={styles.signUpLink}>Log In</Text>
                 </Text>
             </TouchableOpacity>
-            <LoadingFullScreen loading={loading} />
         </View>
-    )
-}
-
-export default RegisterScreen
-
+    );
+};
 const styles = StyleSheet.create({
     container: {
-        flexDirection: "column",
-        gap: 32,
-        paddingVertical: 28,
-        paddingHorizontal: 12,
-        backgroundColor: Color.lightBackground,
-        height: "100%"
-    },
-    logo: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 8,
-    },
-    fontLogo: {
-        fontSize: FontSize.fontLarge,
-        color: Color.blackText,
-        fontWeight: "bold",
-    },
-    line: {
-        height: 1,
         flex: 1,
-        backgroundColor: "#A4ACB9",
+        backgroundColor: '#F8F9FA',
+        paddingHorizontal: 16,
+        justifyContent: 'center',
     },
-    btnStyle: {
-        backgroundColor: Color.darkBackground,
-        paddingVertical: 16,
-        borderRadius: 16,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
+    logoContainer: {
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    title: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        color: '#333',
+        marginBottom: 20,
+    },
+    input: {
+        height: 50,
         borderWidth: 1,
-        borderColor: Color.borderInput
+        borderColor: '#ddd',
+        borderRadius: 8,
+        paddingHorizontal: 12,
+        fontSize: 16,
+        marginBottom: 12,
+        backgroundColor: '#fff',
     },
-    fontBtnStyle: {
-        color: Color.lightText,
-        fontFamily: "Roboto Regular",
-        fontWeight: "900",
+    row: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 20,
     },
+    rememberMeContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    checkbox: {
+        width: 18,
+        height: 18,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        borderRadius: 4,
+        marginRight: 8,
+        backgroundColor: '#fff',
+    },
+    checkboxSelected: {
+        backgroundColor: '#4A90E2',
+        borderColor: '#4A90E2',
+    },
+    rememberMeText: {
+        fontSize: 14,
+        color: '#555',
+    },
+    forgotPassword: {
+        fontSize: 14,
+        color: '#FF6F61',
+    },
+    signInButton: {
+        backgroundColor: Color.darkBlueBackground,
+        borderRadius: 90,
+        paddingVertical: 12,
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    signInButtonText: {
+        fontSize: 16,
+        color: '#fff',
+        fontWeight: 'bold',
+    },
+    orText: {
+        fontSize: 14,
+        textAlign: 'center',
+        color: '#aaa',
+        marginBottom: 20,
+    },
+    socialContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginBottom: 20,
+    },
+    socialButton: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        backgroundColor: '#fff',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginHorizontal: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    signUpText: {
+        fontSize: 14,
+        textAlign: 'center',
+        color: '#555',
+    },
+    signUpLink: {
+        color: '#85C850',
+        fontWeight: 'bold',
+    },
+});
 
-})
+
+export default RegisterScreen;

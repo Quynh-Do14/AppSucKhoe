@@ -13,7 +13,7 @@ interface InfoCardProps {
     title: string; // Tiêu đề (Heart Rate, Calories)
     value: string; // Giá trị (e.g., "98 bpm", "510.43 kCal")
     status: string; // Trạng thái (e.g., "Normal")
-    chartPath: string; // Path cho biểu đồ
+    chartPath: any; // Path cho biểu đồ
 }
 
 const InfoCard: React.FC<InfoCardProps> = ({
@@ -31,7 +31,7 @@ const InfoCard: React.FC<InfoCardProps> = ({
                 </View>
                 <Text style={styles.title}>{title}</Text>
             </View>
-            <View style={styles.body}>
+            <View>
                 <Text style={styles.value}>{value}</Text>
                 {
                     status
@@ -42,9 +42,7 @@ const InfoCard: React.FC<InfoCardProps> = ({
                 }
 
             </View>
-            <Svg height="40" width="100%" style={styles.chart}>
-                <Path d={chartPath} fill="none" stroke="rgba(255, 255, 255, 0.5)" strokeWidth="2" />
-            </Svg>
+            <Image source={chartPath} />
         </View>
     );
 };
@@ -60,14 +58,14 @@ const HomeScreen = () => {
                             title="Heart Rate"
                             value="98 bpm"
                             status="Normal"
-                            chartPath="M10,30 Q40,10 70,20 Q100,40 130,30"
+                            chartPath={require("../../assets/images/line1.png")}
                         />
                         <InfoCard
                             icon={require("../../assets/images/fire.png")}
                             title="Calories"
                             value="510.43 kCal"
                             status=""
-                            chartPath="M10,30 Q30,20 50,25 Q70,40 100,20"
+                            chartPath={require("../../assets/images/line1.png")}
                         />
                     </View>
                     <HealthCard />
@@ -92,9 +90,11 @@ const styles = StyleSheet.create({
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
+        gap: 20
     },
     card: {
         flexDirection: 'column',
+        gap: 8,
         alignItems: 'flex-start',
         borderRadius: 20,
         padding: 16,
@@ -115,9 +115,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: Color.blackText,
         fontWeight: 'bold',
-    },
-    body: {
-        marginTop: 20,
     },
     value: {
         fontSize: 24,
@@ -140,25 +137,9 @@ const styles = StyleSheet.create({
         backgroundColor: "#fdd8e2",
         borderRadius: 12,
     },
-    chart: {
-        marginTop: 10,
-    },
     fontStyle: {
         fontSize: FontSize.fontMedium,
         color: Color.blackText
     },
-    question: {
-        fontSize: FontSize.fontSmall,
-        color: Color.darkSubBackground
-    },
-    content: {
-        borderTopLeftRadius: 16,
-        borderTopRightRadius: 16,
-        backgroundColor: Color.lightBackground,
-        marginTop: -20,
-        paddingVertical: 28,
-        paddingHorizontal: 12,
-        height: "100%",
-    }
 
 })
