@@ -13,10 +13,19 @@ const BottomMenu = () => {
             // headerShown={false}
             screenOptions={{
                 headerShown: false,
-                tabBarShowLabel: false,
+                tabBarShowLabel: true,
                 tabBarStyle: {
                     backgroundColor: Color.lightBackground,
                     borderColor: Color.lightBackground,
+                    borderRadius: 20,
+                    height: 60,
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 4 },
+                    shadowOpacity: 0.2,
+                    shadowRadius: 4,
+                    elevation: 6,
+                    marginHorizontal: 12,
+                    marginBottom: 8 
                 },
             }}
         >
