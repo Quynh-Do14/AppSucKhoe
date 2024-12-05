@@ -88,16 +88,16 @@ const styles = StyleSheet.create({
     },
     introduce: {
         display: "flex",
-        flexDirection: "row",
+        flexDirection: "row", 
         justifyContent: "space-between",
-        gap: 20
+        // gap: 20
     },
     card: {
         flexDirection: 'column',
         gap: 8,
         alignItems: 'flex-start',
         borderRadius: 20,
-        padding: 16,
+        padding: 12,
         backgroundColor: '#fff',
         justifyContent: 'space-between',
         shadowColor: '#000',

@@ -31,7 +31,7 @@ const LoginScreen = () => {
                 allRequestOK = false;
             }
         });
-
+                     
         return allRequestOK;
     };
 
