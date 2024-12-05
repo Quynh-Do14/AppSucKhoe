@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:156767076381:android:38d5c8afb44b20079f86f4",
+        "mobilesdk_app_id": "1:156767076381:android:b3574b876748a7a89f86f4",
         "android_client_info": {
-          "package_name": "com.tech.healthApp"
+          "package_name": "com.appsuckhoe"
         }
       },
       "oauth_client": [],

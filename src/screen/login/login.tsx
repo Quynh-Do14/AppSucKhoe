@@ -1,8 +1,17 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Color } from '../../core/constants/StyleCommon';
+import auth from '@react-native-firebase/auth';
+import { GoogleSignin } from 'react-native-google-signin';
+import { Alert } from 'react-native';
+
+GoogleSignin.configure({
+    webClientId:
+        "370918636805-uj4s1r556qsmjuncevc1i84c71f74p3r.apps.googleusercontent.com",
+    offlineAccess: true,
+});
 
 const LoginScreen = () => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -10,8 +19,8 @@ const LoginScreen = () => {
     const [validate, setValidate] = useState<any>({});
     const [submittedTime, setSubmittedTime] = useState<any>(null);
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('doducquynh14022000@gmail.com');
+    const [password, setPassword] = useState('quynhdo14');
     const [rememberMe, setRememberMe] = useState(false);
     const navigation = useNavigation<any>()
 
@@ -31,7 +40,7 @@ const LoginScreen = () => {
                 allRequestOK = false;
             }
         });
-                     
+
         return allRequestOK;
     };
 
@@ -41,10 +50,45 @@ const LoginScreen = () => {
         secondInputRef.current?.focus();
     };
 
-    const onLoginAsync = async () => {
-        navigation.navigate("BottomMenu")
+    function onAuthStateChanged(user: any) {
+        console.log("auth changed", user);
+        if (user) {
+            navigation.navigate('Home');
+        }
     }
 
+    useEffect(() => {
+        const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+        return subscriber; // unsubscribe on unmount
+    }, []);
+    const onLoginGoogle = async () => {
+        await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+        // Get the users ID token
+        const { idToken } = await GoogleSignin.signIn();
+
+        // Create a Google credential with the token
+        const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+        // Sign-in the user with the credential
+        await auth().signInWithCredential(googleCredential);
+    }
+
+    console.log("email", email, password);
+
+    const onLoginAsync = async () => {
+
+        try {
+            await auth().signInWithEmailAndPassword(email, password).then(
+                (res) => {
+                    console.log("res", res);
+                    navigation.navigate("BottomMenu")
+
+                });
+        } catch (error) {
+            console.error(error);
+            Alert.alert('Error', 'Invalid email or password. Please try again.');
+        }
+    }
     return (
         <View style={styles.container}>
             {/* Logo */}
@@ -90,7 +134,7 @@ const LoginScreen = () => {
             </View>
 
             {/* Sign In Button */}
-            <TouchableOpacity style={styles.signInButton} onPress={onLoginAsync}> 
+            <TouchableOpacity style={styles.signInButton} onPress={onLoginAsync}>
                 <Text style={styles.signInButtonText}>Sign In</Text>
             </TouchableOpacity>
 

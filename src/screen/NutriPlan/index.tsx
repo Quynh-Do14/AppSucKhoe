@@ -1,9 +1,10 @@
 import { Dimensions, FlatList, Image, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import MainLayout from '../../infrastructure/layouts/layout'
 import { Color, FontSize } from '../../core/constants/StyleCommon';
 import Icon from 'react-native-vector-icons/Ionicons';
 import SearchAndFilter from './search';
+import firestore from '@react-native-firebase/firestore';
 
 const food = [
     {
@@ -44,6 +45,27 @@ const { height: viewportHeight } = Dimensions.get('window');
 const HealthTrackingScreen = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [password, setPassword] = useState('');
+
+    const [users, setUsers] = useState<any[]>([]);
+
+    const fb = firestore().collection("foodRations");
+
+
+    useEffect(() => {
+        fb.onSnapshot((querySnapshot) => {
+            console.log("querySnapshot", querySnapshot);
+
+            const list: any = [];
+            querySnapshot.forEach((doc) => {
+                list.push({
+                    id: doc.id,
+                    name: doc.data().name,
+                    fat: doc.data().fat, // Có thể thay 'name' nếu cần trường khác
+                });
+            });
+            console.log("list", list);
+        });
+    }, []);
 
     return (
         <MainLayout title={"Discover Food"}>
