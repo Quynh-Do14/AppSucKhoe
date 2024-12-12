@@ -73,8 +73,6 @@ const LoginScreen = () => {
         await auth().signInWithCredential(googleCredential);
     }
 
-    console.log("email", email, password);
-
     const onLoginAsync = async () => {
 
         try {

@@ -1,8 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useRef, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Color } from '../../core/constants/StyleCommon';
+import auth from '@react-native-firebase/auth';
 
 const RegisterScreen = () => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -41,8 +42,28 @@ const RegisterScreen = () => {
         secondInputRef.current?.focus();
     };
 
-    const onLoginAsync = async () => {
-        navigation.navigate("BottomMenu")
+    const onSignUpAsync = async () => {
+        if (!email || !password) {
+            Alert.alert('Error', 'Please enter both email and password.');
+            return;
+        }
+        try {
+            // Đăng ký người dùng bằng email và mật khẩu
+            const userCredential = await auth().createUserWithEmailAndPassword(email, password);
+            Alert.alert('Success', `User ${userCredential.user.email} created successfully!`);
+            navigation.navigate("LoginScreen")
+        } catch (error: any) {
+            console.error(error);
+            let errorMessage = 'An error occurred. Please try again.';
+            if (error.code === 'auth/email-already-in-use') {
+                errorMessage = 'This email is already in use.';
+            } else if (error.code === 'auth/invalid-email') {
+                errorMessage = 'Invalid email address.';
+            } else if (error.code === 'auth/weak-password') {
+                errorMessage = 'Password should be at least 6 characters.';
+            }
+            Alert.alert('Error', errorMessage);
+        }
     }
 
     return (
@@ -56,14 +77,14 @@ const RegisterScreen = () => {
             <Text style={styles.title}>Create your account</Text>
 
             {/* Email Input */}
-            <TextInput
+            {/* <TextInput
                 style={styles.input}
                 placeholder="Name"
                 placeholderTextColor="#aaa"
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
-            />
+            /> */}
 
             <TextInput
                 style={styles.input}
@@ -84,14 +105,14 @@ const RegisterScreen = () => {
                 secureTextEntry
             />
 
-            <TextInput
+            {/* <TextInput
                 style={styles.input}
                 placeholder="Confirm Password"
                 placeholderTextColor="#aaa"
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
-            />
+            /> */}
 
             {/* Remember Me and Forgot Password */}
             <View style={styles.row}>
@@ -109,8 +130,8 @@ const RegisterScreen = () => {
             </View>
 
             {/* Sign In Button */}
-            <TouchableOpacity style={styles.signInButton}>
-                <Text style={styles.signInButtonText}>Sign In</Text>
+            <TouchableOpacity style={styles.signInButton} onPress={onSignUpAsync}>
+                <Text style={styles.signInButtonText}>Sign Up</Text>
             </TouchableOpacity>
 
             {/* Social Sign In */}
