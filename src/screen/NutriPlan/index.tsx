@@ -1,4 +1,4 @@
-import { Dimensions, FlatList, Image, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Alert, Dimensions, FlatList, Image, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import MainLayout from '../../infrastructure/layouts/layout'
 import { Color, FontSize } from '../../core/constants/StyleCommon';
@@ -45,16 +45,31 @@ const { width: viewportWidth } = Dimensions.get('window');
 const { height: viewportHeight } = Dimensions.get('window');
 
 interface FoodRation {
-    id: string;
     name: string;
-    carbs: number;
-    fat: number;
-    prot: number;
+    carb: string;
+    fat: string;
+    prot: string;
+    volume: string
 }
 
 const HealthTrackingScreen = () => {
     const [modalVisible, setModalVisible] = useState(false);
-    const [password, setPassword] = useState('');
+    const [formData, setFormData] = useState<FoodRation>({
+        name: "",
+        carb: "",
+        fat: "",
+        prot: "",
+        volume: "",
+    })
+
+    const handleChange = (name: string, value: string) => {
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+
     const [loading, setLoading] = useState<boolean>(false);
     const [products, setProducts] = useState<any[]>([]);
     const fetchProducts = async () => {
@@ -63,7 +78,7 @@ const HealthTrackingScreen = () => {
             const querySnapshot = await db.collection("foods").get();
             const foods = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             setLoading(false);
-            console.log("foods", foods);
+            setProducts(foods);
 
         } catch (error) {
             setLoading(false);
@@ -73,6 +88,45 @@ const HealthTrackingScreen = () => {
     useEffect(() => {
         fetchProducts();
     }, []);
+
+    const handleSubmit = async () => {
+        // Validate input
+        setLoading(true);
+        if (
+            !formData.name ||
+            isNaN(Number(formData.carb)) ||
+            isNaN(Number(formData.fat)) ||
+            isNaN(Number(formData.prot)) ||
+            isNaN(Number(formData.volume))
+        ) {
+            Alert.alert("Invalid input", "Please fill all fields correctly.");
+            return;
+        }
+
+        try {
+            await db.collection("foods").add({
+                name: formData.name,
+                carb: formData.carb,
+                fat: formData.fat,
+                prot: formData.prot,
+                volume: formData.volume,
+            }).then(() => {
+                Alert.alert("Success", "Food added successfully!");
+                setFormData({ name: "", carb: "", fat: "", prot: "", volume: "" });
+                setModalVisible(false);
+                setLoading(false);
+                fetchProducts();
+            }).catch(() => {
+                setModalVisible(false)
+                setLoading(false);
+            });
+        } catch (error) {
+            console.error("Error adding food:", error);
+            setModalVisible(false)
+            setLoading(false);
+            Alert.alert("Error", "Failed to add food!");
+        }
+    };
 
     return (
         <MainLayout title={"Discover Food"}>
@@ -88,7 +142,7 @@ const HealthTrackingScreen = () => {
                         </View>
                     </View>
                     {
-                        food.map((it, index) => {
+                        products.map((it, index) => {
                             return (
                                 <View style={styles.card} key={index}>
                                     <View style={styles.left}>
@@ -97,12 +151,12 @@ const HealthTrackingScreen = () => {
                                             <Text style={styles.title}>{it.name}</Text>
                                         </View>
 
-                                        <Text style={styles.calories}>{it.calo} kCal</Text>
+                                        <Text style={styles.calories}>{it.volume}g</Text>
 
                                         <View style={styles.nutritionContainer}>
-                                            <Text style={styles.nutritionText}>Carbs: 43g</Text>
-                                            <Text style={styles.nutritionText}>Fat: 27g</Text>
-                                            <Text style={styles.nutritionText}>Prot: 27g</Text>
+                                            <Text style={styles.nutritionText}>Carb: {it.carb}g</Text>
+                                            <Text style={styles.nutritionText}>Fat: {it.fat}g</Text>
+                                            <Text style={styles.nutritionText}>Prot: {it.prot}g</Text>
                                         </View>
                                     </View>
                                     <Image
@@ -122,42 +176,57 @@ const HealthTrackingScreen = () => {
                 >
                     <View style={styles.modalOverlay}>
                         <View style={styles.modalContainer}>
+                            {/* Nút đóng Modal */}
+                            <TouchableOpacity
+                                style={styles.closeButton}
+                                onPress={() => setModalVisible(false)} // Đóng modal khi nhấn vào nút Close
+                            >
+                                <Text style={styles.closeButtonText}>X</Text>
+                            </TouchableOpacity>
+
                             <Text style={styles.modalText}>Add menu</Text>
 
-                            {/* Nút để đóng modal */}
-
+                            {/* Các input form */}
                             <TextInput
                                 style={styles.input}
                                 placeholder="Name"
                                 placeholderTextColor="#aaa"
-                                value={password}
-                                onChangeText={setPassword}
+                                value={formData.name}
+                                onChangeText={(text) => handleChange("name", text)}
                             />
                             <TextInput
                                 style={styles.input}
-                                placeholder="Carbs"
+                                placeholder="Volume"
                                 placeholderTextColor="#aaa"
-                                value={password}
-                                onChangeText={setPassword}
+                                value={formData.volume}
+                                onChangeText={(text) => handleChange("volume", text)}
+                                keyboardType="numeric"
+                            />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Carb"
+                                placeholderTextColor="#aaa"
+                                value={formData.carb}
+                                onChangeText={(text) => handleChange("carb", text)}
                                 keyboardType="numeric"
                             />
                             <TextInput
                                 style={styles.input}
                                 placeholder="Fat"
                                 placeholderTextColor="#aaa"
-                                value={password}
-                                onChangeText={setPassword}
+                                value={formData.fat}
+                                onChangeText={(text) => handleChange("fat", text)}
                                 keyboardType="numeric"
                             />
                             <TextInput
                                 style={styles.input}
                                 placeholder="Prot"
                                 placeholderTextColor="#aaa"
-                                value={password}
-                                onChangeText={setPassword}
+                                value={formData.prot}
+                                onChangeText={(text) => handleChange("prot", text)}
                                 keyboardType="numeric"
                             />
-                            <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
+                            <TouchableOpacity onPress={handleSubmit} style={styles.submitButton}>
                                 <Text style={styles.buttonText}>Create</Text>
                             </TouchableOpacity>
                         </View>
@@ -165,7 +234,7 @@ const HealthTrackingScreen = () => {
                 </Modal>
             </ScrollView>
             <LoadingFullScreen loading={loading} />
-        </MainLayout>
+        </MainLayout >
     )
 }
 
@@ -245,11 +314,17 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     closeButton: {
-        padding: 10,
-        backgroundColor: '#FF6347',
-        borderRadius: 10,
-        marginTop: 10,
+        position: 'absolute',
+        top: 10,
+        right: 10,
+        backgroundColor: 'red',
+        borderRadius: 20,
+        width: 30,
+        height: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
+
     buttonText: {
         color: 'white',
         fontWeight: 'bold',
@@ -258,28 +333,35 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Nền trong suốt
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Tạo nền mờ
     },
     modalContainer: {
-        width: viewportWidth / 1.2,
+        width: '80%',
         padding: 20,
         backgroundColor: 'white',
         borderRadius: 10,
-        flexDirection: "column",
-        gap: 12
+    },
+
+    closeButtonText: {
+        color: 'white',
+        fontWeight: 'bold',
     },
     modalText: {
         fontSize: 18,
-        textAlign: "center"
+        fontWeight: 'bold',
+        marginBottom: 15,
     },
     input: {
-        height: 50,
         borderWidth: 1,
-        borderColor: '#ddd',
-        borderRadius: 8,
-        paddingHorizontal: 12,
-        fontSize: 16,
-        marginBottom: 12,
-        backgroundColor: '#fff',
+        borderColor: '#ccc',
+        padding: 10,
+        marginBottom: 10,
+        borderRadius: 5,
+    },
+    submitButton: {
+        backgroundColor: '#4CAF50',
+        padding: 10,
+        borderRadius: 5,
+        alignItems: 'center',
     },
 })

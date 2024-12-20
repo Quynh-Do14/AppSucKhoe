@@ -78,8 +78,10 @@ const ActivityCard2: React.FC<ActivityCardProps> = ({
 type Props = {
     listStep: any[]
 }
+
 const HealthCard = (props: Props) => {
     const { listStep } = props
+
     return (
         <View style={styles.container}>
             <ActivityCard

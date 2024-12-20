@@ -106,7 +106,6 @@ const AnalysisScreen = () => {
         fetchCalories().then(() => { });
     }, []);
 
-    console.log("listStep", calories);
 
     return (
         <MainLayout title={"Analysis"}>
