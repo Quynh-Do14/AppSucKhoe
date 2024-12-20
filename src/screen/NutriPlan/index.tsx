@@ -5,6 +5,8 @@ import { Color, FontSize } from '../../core/constants/StyleCommon';
 import Icon from 'react-native-vector-icons/Ionicons';
 import SearchAndFilter from './search';
 import firestore from '@react-native-firebase/firestore';
+import db from '../../core/config/firebase.config';
+import LoadingFullScreen from '../../infrastructure/components/controls/loading';
 
 const food = [
     {
@@ -42,29 +44,32 @@ const food = [
 const { width: viewportWidth } = Dimensions.get('window');
 const { height: viewportHeight } = Dimensions.get('window');
 
+interface FoodRation {
+    id: string;
+    name: string;
+    carbs: number;
+    fat: number;
+    prot: number;
+}
+
 const HealthTrackingScreen = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [password, setPassword] = useState('');
-
-    const [users, setUsers] = useState<any[]>([]);
-
-    const fb = firestore().collection("foodRations");
-
-
+    const [loading, setLoading] = useState<boolean>(false);
+    const [products, setProducts] = useState<any[]>([]);
+    const fetchProducts = async () => {
+        setLoading(true);
+        try {
+            const querySnapshot = await db.collection("foods").get();
+            const foods = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            setLoading(false);
+        } catch (error) {
+            setLoading(false);
+            console.error("Error fetching data:", error);
+        }
+    };
     useEffect(() => {
-        fb.onSnapshot((querySnapshot) => {
-            console.log("querySnapshot", querySnapshot);
-
-            const list: any = [];
-            querySnapshot.forEach((doc) => {
-                list.push({
-                    id: doc.id,
-                    name: doc.data().name,
-                    fat: doc.data().fat, // Có thể thay 'name' nếu cần trường khác
-                });
-            });
-            console.log("list", list);
-        });
+        fetchProducts();
     }, []);
 
     return (
@@ -157,6 +162,7 @@ const HealthTrackingScreen = () => {
                     </View>
                 </Modal>
             </ScrollView>
+            <LoadingFullScreen loading={loading} />
         </MainLayout>
     )
 }

@@ -6,10 +6,11 @@ import { Color } from '../../core/constants/StyleCommon';
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin } from 'react-native-google-signin';
 import { Alert } from 'react-native';
+import LoadingFullScreen from '../../infrastructure/components/controls/loading';
 
 GoogleSignin.configure({
     webClientId:
-        "370918636805-uj4s1r556qsmjuncevc1i84c71f74p3r.apps.googleusercontent.com",
+        "156767076381-6tcvp09cpiao3kc9imhk9n21pml7b7fg.apps.googleusercontent.com",
     offlineAccess: true,
 });
 
@@ -51,7 +52,6 @@ const LoginScreen = () => {
     };
 
     function onAuthStateChanged(user: any) {
-        console.log("auth changed", user);
         if (user) {
             navigation.navigate('Home');
         }
@@ -63,29 +63,32 @@ const LoginScreen = () => {
     }, []);
     const onLoginGoogle = async () => {
         await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-        // Get the users ID token
         const { idToken } = await GoogleSignin.signIn();
 
-        // Create a Google credential with the token
         const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-
-        // Sign-in the user with the credential
-        await auth().signInWithCredential(googleCredential);
+        setLoading(true);
+        await auth().signInWithCredential(googleCredential)
+            .then(() => {
+                setLoading(false);
+            }).catch(() => {
+                setLoading(false);
+            });
     }
 
     const onLoginAsync = async () => {
-
-        try {
-            await auth().signInWithEmailAndPassword(email, password).then(
-                (res) => {
-                    console.log("res", res);
-                    navigation.navigate("BottomMenu")
-
-                });
-        } catch (error) {
-            console.error(error);
-            Alert.alert('Error', 'Invalid email or password. Please try again.');
-        }
+        navigation.navigate("BottomMenu")
+        // setLoading(true);
+        // try {
+        //     await auth().signInWithEmailAndPassword(email, password).then(
+        //         (res) => {
+        //             navigation.navigate("BottomMenu")
+        //             setLoading(false);
+        //         });
+        // } catch (error) {
+        //     console.error(error);
+        //     setLoading(false);
+        //     Alert.alert('Error', 'Invalid email or password. Please try again.');
+        // }
     }
     return (
         <View style={styles.container}>
@@ -139,7 +142,7 @@ const LoginScreen = () => {
             {/* Social Sign In */}
             <Text style={styles.orText}>or sign in with</Text>
             <View style={styles.socialContainer}>
-                <TouchableOpacity style={styles.socialButton}>
+                <TouchableOpacity style={styles.socialButton} onPress={onLoginGoogle}>
                     <Icon name="logo-google" size={24} color="#DB4437" />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.socialButton}>
@@ -158,6 +161,7 @@ const LoginScreen = () => {
                     <Text style={styles.signUpLink}>Sign Up</Text>
                 </Text>
             </TouchableOpacity>
+            <LoadingFullScreen loading={loading} />
         </View>
     );
 };

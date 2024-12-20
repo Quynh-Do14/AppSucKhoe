@@ -75,15 +75,18 @@ const ActivityCard2: React.FC<ActivityCardProps> = ({
         </View>
     );
 };
-
-const HealthCard = () => {
+type Props = {
+    listStep: any[]
+}
+const HealthCard = (props: Props) => {
+    const { listStep } = props
     return (
         <View style={styles.container}>
             <ActivityCard
                 title="Walk"
-                value="2530"
+                value={listStep[listStep.length - 1]?.value}
                 unit="steps"
-                progress={0.75}
+                progress={Number(listStep[listStep.length - 1]?.value) / 1000}
                 showCircle={true}
                 color="#FFD700" icon={''} />
             <View style={styles.right}>

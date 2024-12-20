@@ -7,12 +7,25 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:156767076381:android:b3574b876748a7a89f86f4",
+        "mobilesdk_app_id": "1:156767076381:android:51126580b90c7a3b9f86f4",
         "android_client_info": {
           "package_name": "com.appsuckhoe"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "156767076381-rv18u062u0jele6jtlpouucj4knslkju.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.appsuckhoe",
+            "certificate_hash": "bd232b482ef68ecd36adc8b5c58a43d425bb4ae5"
+          }
+        },
+        {
+          "client_id": "156767076381-6tcvp09cpiao3kc9imhk9n21pml7b7fg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyA1xiioz7jxHZEqEOD_H43fc8MdRGapOsU"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "156767076381-6tcvp09cpiao3kc9imhk9n21pml7b7fg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
