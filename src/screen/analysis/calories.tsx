@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { BarChart } from 'react-native-chart-kit';
-import { getDayOfWeek } from '../../infrastructure/helper/helper';
+import { convertDaysVNToEN } from '../../infrastructure/helper/helper';
 type Props = {
     title: string
     listStep: Array<any>
 }
-const StepsCard = (props: Props) => {
+const CaloriesCard = (props: Props) => {
     const { title, listStep } = props;
     const [value, setValue] = useState<any[]>([])
     const [label, setLabel] = useState<any[]>([])
 
     useEffect(() => {
-        const value = listStep.map((item) => item.value);
-        const label = listStep.map((item) => getDayOfWeek(item.date));
+        const value = listStep.map((item) => item.calorie);
+        const label = listStep.map((item) => convertDaysVNToEN(item.day));
         setValue(value)
         setLabel(label)
     }, [listStep])
@@ -41,7 +41,7 @@ const StepsCard = (props: Props) => {
                 chartConfig={{
                     backgroundGradientFrom: '#ffffff',
                     backgroundGradientTo: '#ffffff',
-                    color: () => `#7c91e5`,
+                    color: () => `#2cf755`,
                     barPercentage: 0.5,
                 }}
                 style={styles.chart}
@@ -91,4 +91,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default StepsCard;
+export default CaloriesCard;

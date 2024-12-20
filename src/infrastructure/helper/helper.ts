@@ -157,3 +157,28 @@ export const configImageURL = (image: string) => {
     }
     return ""
 }
+
+export const getDayOfWeek = (dateString: any) => {
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const date = new Date(dateString);
+    return days[date.getDay()];
+};
+
+export const convertDaysVNToEN = (daysVN: string): string => {
+    const mapping: Record<string, string> = {
+        'Th 2': 'Mon',
+        'Th 3': 'Tue',
+        'Th 4': 'Wed',
+        'Th 5': 'Thu',
+        'Th 6': 'Fri',
+        'Th 7': 'Sat',
+        'CN': 'Sun',
+    };
+
+    // Tách chuỗi tiếng Việt và chuyển từng phần tử
+    const daysArrayVN = daysVN.split(" - ");
+    const daysArrayEN = daysArrayVN.map((day) => mapping[day] || "Invalid Day");
+
+    // Gộp lại thành chuỗi tiếng Anh
+    return daysArrayEN.join(" - ");
+}

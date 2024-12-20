@@ -86,12 +86,10 @@ const HomeScreen = () => {
 
         GoogleFit.getDailyStepCountSamples(opt)
             .then((res) => {
-                if (res.length === 0) {
-                    console.log("No step data found for the selected period.");
+                if (res?.length) {
+                    setListStep(res[1]?.steps)
                 } else {
-                    res.forEach((data) => {
-                        setListStep(data.steps)
-                    });
+                    console.log("No step data found for the selected period.");
                 }
             })
             .catch((err) => {

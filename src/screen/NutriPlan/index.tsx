@@ -63,6 +63,8 @@ const HealthTrackingScreen = () => {
             const querySnapshot = await db.collection("foods").get();
             const foods = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             setLoading(false);
+            console.log("foods", foods);
+
         } catch (error) {
             setLoading(false);
             console.error("Error fetching data:", error);

@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react'
 import MainLayout from '../../infrastructure/layouts/layout'
 import HeaderAnalysis from './header'
 import GoogleFit, { BucketUnit, Scopes } from 'react-native-google-fit';
+import StepsCard from './chart';
+import CaloriesCard from './calories';
 const AnalysisScreen = () => {
     const [listStep, setListStep] = useState<any[]>([]);
     const [calories, setCalories] = useState<any[]>([]);
@@ -40,12 +42,10 @@ const AnalysisScreen = () => {
 
         GoogleFit.getDailyStepCountSamples(opt)
             .then((res) => {
-                if (res.length === 0) {
-                    console.log("No step data found for the selected period.");
+                if (res?.length) {
+                    setListStep(res[1]?.steps)
                 } else {
-                    res.forEach((data) => {
-                        setListStep(data.steps)
-                    });
+                    console.log("No step data found for the selected period.");
                 }
             })
             .catch((err) => {
@@ -106,6 +106,7 @@ const AnalysisScreen = () => {
         fetchCalories().then(() => { });
     }, []);
 
+    console.log("listStep", calories);
 
     return (
         <MainLayout title={"Analysis"}>
@@ -114,6 +115,14 @@ const AnalysisScreen = () => {
                     <HeaderAnalysis
                         step={listStep[listStep.length - 1]?.value}
                         calo={Number(calories[calories.length - 1]?.calorie || 0).toFixed(2)}
+                    />
+                    <StepsCard
+                        listStep={listStep}
+                        title={'Step'}
+                    />
+                    <CaloriesCard
+                        listStep={calories}
+                        title={'Calories'}
                     />
                 </View>
             </ScrollView>
