@@ -9,6 +9,10 @@ import MainLayout from '../../infrastructure/layouts/layout';
 import Overall from './overall';
 import GoogleFit, { BucketUnit, Scopes } from 'react-native-google-fit';
 import { ActivityData, DistanceData } from '../../infrastructure/interface/Activity';
+import { useRecoilValue } from 'recoil';
+import { ProfileState } from '../../core/atoms/profile/profileState';
+import db from '../../core/config/firebase.config';
+import LoadingFullScreen from '../../infrastructure/components/controls/loading';
 interface InfoCardProps {
     icon: any; // Tên icon
     title: string; // Tiêu đề (Heart Rate, Calories)
@@ -48,10 +52,31 @@ const InfoCard: React.FC<InfoCardProps> = ({
     );
 };
 const HomeScreen = () => {
+    const [loading, setLoading] = useState<boolean>(false);
     const [listStep, setListStep] = useState<any[]>([]);
     const [calories, setCalories] = useState<any[]>([]);
     const [activities, setActivities] = useState<ActivityData[]>([]);
     const [distanceData, setDistanceData] = useState<DistanceData[]>([]);
+    const [heartRate, setHeartRate] = useState<number>();
+    const [profile, setProfile] = useState<any>({});
+    const userProfile = useRecoilValue(ProfileState).data;
+
+    const fetchUser = async () => {
+        setLoading(true);
+        try {
+            const querySnapshot = await db.collection("parameter").where("uid", "==", userProfile.uid).get();
+            const foods: any[] = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            setLoading(false);
+            setProfile(foods[0]);
+        } catch (error) {
+            setLoading(false);
+            console.error("Error fetching data:", error);
+        }
+    };
+    useEffect(() => {
+        fetchUser();
+    }, []);
+
     const startGoogleFit = async () => {
         const options = {
             scopes: [
@@ -211,6 +236,10 @@ const HomeScreen = () => {
         fetchGoogleFitData();
     }, []);
 
+    useEffect(() => {
+        const number = Math.floor(Math.random() * (85 - 80 + 1)) + 80; // Công thức để random số trong khoảng [min, max]
+        setHeartRate(number);
+    })
     return (
         <MainLayout title={"Username"}>
             <ScrollView>
@@ -220,7 +249,7 @@ const HomeScreen = () => {
                         <InfoCard
                             icon={require("../../assets/images/heart.png")}
                             title="Heart Rate"
-                            value="98 bpm"
+                            value={`${heartRate} bpm`}
                             status="Normal"
                             chartPath={require("../../assets/images/line1.png")}
                         />
@@ -234,9 +263,11 @@ const HomeScreen = () => {
                     </View>
                     <HealthCard
                         listStep={listStep}
+                        profile={profile}
                     />
                 </View>
             </ScrollView>
+            <LoadingFullScreen loading={loading} />
         </MainLayout>
     )
 }

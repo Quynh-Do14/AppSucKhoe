@@ -47,13 +47,16 @@ const RegisterScreen = () => {
             Alert.alert('Error', 'Please enter both email and password.');
             return;
         }
+        setLoading(true);
         try {
             // Đăng ký người dùng bằng email và mật khẩu
             const userCredential = await auth().createUserWithEmailAndPassword(email, password);
             Alert.alert('Success', `User ${userCredential.user.email} created successfully!`);
             navigation.navigate("LoginScreen")
+            setLoading(false);
         } catch (error: any) {
             console.error(error);
+            setLoading(false);
             let errorMessage = 'An error occurred. Please try again.';
             if (error.code === 'auth/email-already-in-use') {
                 errorMessage = 'This email is already in use.';

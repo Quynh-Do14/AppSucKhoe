@@ -182,3 +182,8 @@ export const convertDaysVNToEN = (daysVN: string): string => {
     // Gộp lại thành chuỗi tiếng Anh
     return daysArrayEN.join(" - ");
 }
+export const formatTime = (date: any) => {
+    const hours = date.getHours().toString().padStart(2, '0'); // Thêm số 0 nếu giờ < 10
+    const minutes = date.getMinutes().toString().padStart(2, '0'); // Thêm số 0 nếu phút < 10
+    return `${hours}:${minutes}`;
+};

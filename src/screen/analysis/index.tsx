@@ -5,9 +5,12 @@ import HeaderAnalysis from './header'
 import GoogleFit, { BucketUnit, Scopes } from 'react-native-google-fit';
 import StepsCard from './chart';
 import CaloriesCard from './calories';
+import LoadingFullScreen from '../../infrastructure/components/controls/loading';
 const AnalysisScreen = () => {
     const [listStep, setListStep] = useState<any[]>([]);
     const [calories, setCalories] = useState<any[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+
     const startGoogleFit = async () => {
         const options = {
             scopes: [
@@ -39,16 +42,19 @@ const AnalysisScreen = () => {
             bucketUnit: BucketUnit.DAY, // Bucket theo ngày
             bucketInterval: 1, // Khoảng cách 1 ngày
         };
-
+        setLoading(true);
         GoogleFit.getDailyStepCountSamples(opt)
             .then((res) => {
                 if (res?.length) {
+                    setLoading(false);
                     setListStep(res[1]?.steps)
                 } else {
+                    setLoading(false);
                     console.log("No step data found for the selected period.");
                 }
             })
             .catch((err) => {
+                setLoading(false);
                 console.error("Error fetching step data:", err);
             });
     };
@@ -58,6 +64,7 @@ const AnalysisScreen = () => {
     }, [])
 
     const fetchCalories = async () => {
+        setLoading(true);
         const options = {
             scopes: [
                 Scopes.FITNESS_ACTIVITY_READ, // Quyền đọc dữ liệu hoạt động
@@ -70,11 +77,14 @@ const AnalysisScreen = () => {
             .then((authResult) => {
                 if (authResult.success) {
                     getCaloriesData();
+                    setLoading(false);
                 } else {
+                    setLoading(false);
                     console.error("Authorization Denied:", authResult.message);
                 }
             })
             .catch((err) => {
+                setLoading(false);
                 console.error("Authorization Error:", err);
             });
     };
@@ -86,18 +96,20 @@ const AnalysisScreen = () => {
             bucketUnit: BucketUnit.DAY,
             bucketInterval: 1,
         };
-
+        setLoading(true);
         // Bước 2: Gọi API lấy dữ liệu calo
         GoogleFit.getDailyCalorieSamples(opt)
             .then((res) => {
                 if (res && res.length > 0) {
                     setCalories(res)
-
+                    setLoading(false);
                 } else {
+                    setLoading(false);
                     console.log("No calorie data found for the selected period.");
                 }
             })
             .catch((err) => {
+                setLoading(false);
                 console.error("Error fetching calorie data:", err);
             });
     };
@@ -106,6 +118,7 @@ const AnalysisScreen = () => {
         fetchCalories().then(() => { });
     }, []);
 
+    console.log("loading", loading);
 
     return (
         <MainLayout title={"Analysis"}>
@@ -114,6 +127,7 @@ const AnalysisScreen = () => {
                     <HeaderAnalysis
                         step={listStep[listStep.length - 1]?.value}
                         calo={Number(calories[calories.length - 1]?.calorie || 0).toFixed(2)}
+                        setLoading={setLoading}
                     />
                     <StepsCard
                         listStep={listStep}
@@ -125,6 +139,7 @@ const AnalysisScreen = () => {
                     />
                 </View>
             </ScrollView>
+            <LoadingFullScreen loading={loading} />
         </MainLayout>
     )
 }

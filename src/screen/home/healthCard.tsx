@@ -77,10 +77,11 @@ const ActivityCard2: React.FC<ActivityCardProps> = ({
 };
 type Props = {
     listStep: any[]
+    profile: any
 }
 
 const HealthCard = (props: Props) => {
-    const { listStep } = props
+    const { listStep, profile } = props;
 
     return (
         <View style={styles.container}>
@@ -95,13 +96,13 @@ const HealthCard = (props: Props) => {
                 <ActivityCard2
                     icon={require("../../assets/images/sleeping.png")}
                     title="Sleep"
-                    value="6:30"
+                    value={profile?.sleep}
                     unit="hours"
                 />
                 <ActivityCard2
                     icon={require("../../assets/images/water.png")}
                     title="Water"
-                    value="1.2"
+                    value={profile?.water}
                     unit="liters"
                 />
             </View>
@@ -194,7 +195,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end',
     },
     value: {
-        fontSize: 24,
+        fontSize: 20,
         fontWeight: 'bold',
         color: '#45A8DD'
 

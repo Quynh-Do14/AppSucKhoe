@@ -2458,6 +2458,13 @@
     prompts "^2.4.2"
     semver "^7.5.2"
 
+"@react-native-community/datetimepicker@^8.2.0":
+  version "8.2.0"
+  resolved "https://registry.npmjs.org/@react-native-community/datetimepicker/-/datetimepicker-8.2.0.tgz"
+  integrity sha512-qrUPhiBvKGuG9Y+vOqsc56RPFcHa1SU2qbAMT0hfGkoFIj3FodE0VuPVrEa8fgy7kcD5NQmkZIKgHOBLV0+hWg==
+  dependencies:
+    invariant "^2.2.4"
+
 "@react-native-firebase/app@^21.6.1", "@react-native-firebase/app@21.6.1":
   version "21.6.1"
   resolved "https://registry.npmjs.org/@react-native-firebase/app/-/app-21.6.1.tgz"
@@ -2476,6 +2483,16 @@
   version "21.6.1"
   resolved "https://registry.npmjs.org/@react-native-firebase/firestore/-/firestore-21.6.1.tgz"
   integrity sha512-i3RQM11zTRCYc7/KdD0MiCm7UyyTecDXG/89lEv5hvVJMS6ltIfK+0rDheSpBzYlK4kNoK765jnvVAQxIFEqbA==
+
+"@react-native-firebase/messaging@^21.6.1":
+  version "21.6.1"
+  resolved "https://registry.npmjs.org/@react-native-firebase/messaging/-/messaging-21.6.1.tgz"
+  integrity sha512-WoMGcqflDyhwpe5saqJFNKcvRiGRhW764cNv9j9fca11rtzqw186/frvE+QDVuUBEeaOZJg7bW+BV19IToc92g==
+
+"@react-native-firebase/storage@^21.6.1":
+  version "21.6.1"
+  resolved "https://registry.npmjs.org/@react-native-firebase/storage/-/storage-21.6.1.tgz"
+  integrity sha512-97PsRf1i+0TdQgbLV0WD/HDB+3cae7JWimqc8eTGVc+QK2OuooYgs34flnbDkXu71brzDWdGJRWijsZhtORggg==
 
 "@react-native/assets-registry@0.76.1":
   version "0.76.1"
@@ -6948,6 +6965,11 @@ react-native-google-signin@^2.1.1:
   version "2.1.1"
   resolved "https://registry.npmjs.org/react-native-google-signin/-/react-native-google-signin-2.1.1.tgz"
   integrity sha512-6l3fiLdX/bfhh0BoxGq+jGkagFsO+mrE/eRV4+3/0k8+FDxO90vdPpQdDiwlM5vWXRxWthTzMM09/jHw+4cvNw==
+
+react-native-image-picker@^7.2.3:
+  version "7.2.3"
+  resolved "https://registry.npmjs.org/react-native-image-picker/-/react-native-image-picker-7.2.3.tgz"
+  integrity sha512-zKIZUlQNU3EtqizsXSH92zPeve4vpUrsqHu2kkpCxWE9TZhJFZBb+irDsBOY8J21k0+Edgt06TMQGJ+iPUIXyA==
 
 react-native-linear-gradient@^2.8.3:
   version "2.8.3"

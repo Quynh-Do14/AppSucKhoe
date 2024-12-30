@@ -2,7 +2,37 @@ import React from 'react';
 import { View, TextInput, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-const SearchAndFilter = () => {
+const cate = [
+    {
+        label: 'Breakfast',
+        value: 'Breakfast',
+        color: "#42a5f5"
+    },
+    {
+        label: 'Lunch',
+        value: 'Lunch',
+        color: "#66bb6a"
+    },
+    {
+        label: 'Dinner',
+        value: 'Dinner',
+        color: "#e927c2"
+    },
+    {
+        label: 'All',
+        value: '',
+        color: "#e92727"
+    },
+];
+type Props = {
+    setTypeSelect: Function
+}
+
+const SearchAndFilter = (props: Props) => {
+    const { setTypeSelect } = props
+    const onSelectType = (value: string) => {
+        setTypeSelect(value)
+    }
     return (
         <View style={styles.container}>
             {/* Thanh tìm kiếm */}
@@ -17,15 +47,19 @@ const SearchAndFilter = () => {
 
             {/* Các nút lựa chọn */}
             <View style={styles.filterContainer}>
-                <TouchableOpacity style={[styles.filterButton, { backgroundColor: '#42a5f5' }]}>
-                    <Text style={styles.filterText}>Breakfast</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.filterButton, { backgroundColor: '#66bb6a' }]}>
-                    <Text style={styles.filterText}>Lunch</Text>
-                </TouchableOpacity>
-                <TouchableOpacity>
-                    <Text style={styles.seeAllText}>See all</Text>
-                </TouchableOpacity>
+                {
+                    cate.map((item, index) => {
+                        return (
+                            <TouchableOpacity
+                                key={index}
+                                style={[styles.filterButton, { backgroundColor: item.color }]}
+                                onPress={() => onSelectType(item.value)}
+                            >
+                                <Text style={styles.filterText}>{item.label}</Text>
+                            </TouchableOpacity>
+                        )
+                    })
+                }
             </View>
         </View>
     );

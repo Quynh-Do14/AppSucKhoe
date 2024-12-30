@@ -7,38 +7,20 @@ import SearchAndFilter from './search';
 import firestore from '@react-native-firebase/firestore';
 import db from '../../core/config/firebase.config';
 import LoadingFullScreen from '../../infrastructure/components/controls/loading';
+import { useRecoilValue } from 'recoil';
+import { ProfileState } from '../../core/atoms/profile/profileState';
 
-const food = [
+const cate = [
     {
-        id: '1',
-        name: 'Rau ngót',
-        calo: 100,
-        image: require("../../assets/images/bo.png"),
+        label: 'Breakfast',
     },
     {
-        id: '2',
-        name: 'Thịt bò',
-        calo: 100,
-        image: require("../../assets/images/bo.png"),
+        label: 'Lunch',
     },
     {
-        id: '3',
-        name: 'Thịt gà',
-        calo: 100,
-        image: require("../../assets/images/bo.png"),
+        label: 'Dinner',
     },
-    {
-        id: '4',
-        name: 'Cơm',
-        calo: 100,
-        image: require("../../assets/images/bo.png"),
-    },
-    {
-        id: '5',
-        name: 'Hoa quả: Táo',
-        calo: 100,
-        image: require("../../assets/images/bo.png"),
-    },
+
 ];
 
 const { width: viewportWidth } = Dimensions.get('window');
@@ -50,16 +32,22 @@ interface FoodRation {
     fat: string;
     prot: string;
     volume: string
+    type: string
 }
 
 const HealthTrackingScreen = () => {
     const [modalVisible, setModalVisible] = useState(false);
+    const [type, setType] = useState<string>("");
+    const [typeSelect, setTypeSelect] = useState<string>("");
+    const [selectdId, setSelectdId] = useState<string>("");
+
     const [formData, setFormData] = useState<FoodRation>({
         name: "",
         carb: "",
         fat: "",
         prot: "",
         volume: "",
+        type: "",
     })
 
     const handleChange = (name: string, value: string) => {
@@ -72,14 +60,16 @@ const HealthTrackingScreen = () => {
 
     const [loading, setLoading] = useState<boolean>(false);
     const [products, setProducts] = useState<any[]>([]);
+    const [productsFilter, setProductsFilter] = useState<any[]>([]);
+    const userProfile = useRecoilValue(ProfileState).data;
     const fetchProducts = async () => {
         setLoading(true);
         try {
-            const querySnapshot = await db.collection("foods").get();
+            const querySnapshot = await db.collection("foods").where("uid", "==", userProfile.uid).get();
             const foods = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             setLoading(false);
             setProducts(foods);
-
+            setProductsFilter(foods);
         } catch (error) {
             setLoading(false);
             console.error("Error fetching data:", error);
@@ -90,7 +80,6 @@ const HealthTrackingScreen = () => {
     }, []);
 
     const handleSubmit = async () => {
-        // Validate input
         setLoading(true);
         if (
             !formData.name ||
@@ -104,16 +93,18 @@ const HealthTrackingScreen = () => {
         }
 
         try {
+            setModalVisible(false);
             await db.collection("foods").add({
                 name: formData.name,
                 carb: formData.carb,
                 fat: formData.fat,
                 prot: formData.prot,
                 volume: formData.volume,
+                type: type,
+                uid: userProfile.uid
             }).then(() => {
                 Alert.alert("Success", "Food added successfully!");
-                setFormData({ name: "", carb: "", fat: "", prot: "", volume: "" });
-                setModalVisible(false);
+                setFormData({ name: "", carb: "", fat: "", prot: "", volume: "", type: "" });
                 setLoading(false);
                 fetchProducts();
             }).catch(() => {
@@ -127,28 +118,88 @@ const HealthTrackingScreen = () => {
             Alert.alert("Error", "Failed to add food!");
         }
     };
+    const onOpenModal = (label: string) => {
+        setModalVisible(true);
+        setType(label)
+    }
+    useEffect(() => {
+        if (typeSelect !== "") {
+            const array = products.filter(item => item.type == typeSelect)
+            setProductsFilter(array);
+        }
+        else {
+            setProductsFilter(products)
+        }
+    }, [typeSelect]);
+
+    const deleteDocument = async () => {
+        setLoading(true);
+        try {
+            await db.collection("foods").doc(selectdId).delete()
+                .then(() => {
+                    setLoading(false);
+                    fetchProducts();
+                });
+        } catch (error) {
+            console.log(error);
+            setLoading(false);
+        }
+    };
+
+    const onDelete = (documentId: string) => {
+        setSelectdId(documentId)
+        Alert.alert('Delete Item', 'Do you want to delete item?', [
+            {
+                text: 'Cancel',
+                style: 'cancel',
+            },
+            {
+                text: 'Delete', onPress: () => {
+                    deleteDocument();
+                },
+            }
+        ]);
+    }
+
 
     return (
         <MainLayout title={"Discover Food"}>
             <ScrollView>
-                <SearchAndFilter />
+                <SearchAndFilter
+                    setTypeSelect={setTypeSelect}
+                />
                 <View style={styles.container}>
                     <View style={styles.cardCreate}>
-                        <View style={[styles.header, { width: "100%" }]}>
-                            <Text style={styles.title}>Lunch </Text>
-                            <TouchableOpacity onPress={() => setModalVisible(true)}>
-                                <Icon name="add-circle" size={24} color="#4caf50" />
-                            </TouchableOpacity>
-                        </View>
+                        {
+                            cate.map((item, index) => {
+                                return (
+                                    <View style={[styles.header]} key={index}>
+                                        <Text style={styles.title}>{item.label} </Text>
+                                        <TouchableOpacity onPress={() => onOpenModal(item.label)}>
+                                            <Icon name="add-circle" size={24} color="#4caf50" />
+                                        </TouchableOpacity>
+                                    </View>
+                                )
+                            })
+                        }
+
                     </View>
                     {
-                        products.map((it, index) => {
+                        productsFilter.map((it, index) => {
                             return (
                                 <View style={styles.card} key={index}>
                                     <View style={styles.left}>
                                         <View style={styles.header}>
-                                            <Icon name="heart-outline" size={24} color="#4caf50" />
-                                            <Text style={styles.title}>{it.name}</Text>
+                                            <View>
+                                                <Icon name="heart-outline" size={24} color="#4caf50" />
+                                                <Text style={styles.title}>{it.name}</Text>
+                                            </View>
+                                            <TouchableOpacity
+                                                style={styles.closeButtonItem}
+                                                onPress={() => onDelete(it.id)} // Đóng modal khi nhấn vào nút Close
+                                            >
+                                                <Text style={styles.closeButtonText}>X</Text>
+                                            </TouchableOpacity>
                                         </View>
 
                                         <Text style={styles.calories}>{it.volume}g</Text>
@@ -157,6 +208,7 @@ const HealthTrackingScreen = () => {
                                             <Text style={styles.nutritionText}>Carb: {it.carb}g</Text>
                                             <Text style={styles.nutritionText}>Fat: {it.fat}g</Text>
                                             <Text style={styles.nutritionText}>Prot: {it.prot}g</Text>
+                                            <Text style={styles.nutritionText}>Type: {it.type}</Text>
                                         </View>
                                     </View>
                                     <Image
@@ -173,6 +225,7 @@ const HealthTrackingScreen = () => {
                     transparent={true} // Nếu bạn muốn modal hiển thị với nền trong suốt
                     visible={modalVisible}
                     onRequestClose={() => setModalVisible(false)} // Dùng cho Android Back Button
+                    style={{ zIndex: 99 }}
                 >
                     <View style={styles.modalOverlay}>
                         <View style={styles.modalContainer}>
@@ -184,7 +237,7 @@ const HealthTrackingScreen = () => {
                                 <Text style={styles.closeButtonText}>X</Text>
                             </TouchableOpacity>
 
-                            <Text style={styles.modalText}>Add menu</Text>
+                            <Text style={styles.modalText}>{type}</Text>
 
                             {/* Các input form */}
                             <TextInput
@@ -244,19 +297,16 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: "column",
         gap: 20,
-        // backgroundColor: "#F7FAFE",
         paddingHorizontal: 12,
         paddingVertical: 20,
     },
     card: {
         padding: 16,
         borderRadius: 16,
-        backgroundColor: '#fff',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.1,
+        borderWidth: 1,
+        borderColor: "#e1e1e1",
+        backgroundColor: "#FFF",
         shadowRadius: 8,
-        elevation: 5,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -270,7 +320,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 8,
         elevation: 5,
-        flexDirection: 'row',
+        flexDirection: 'column',
         justifyContent: 'space-between',
         alignItems: 'flex-start',
         height: viewportHeight / 6
@@ -280,6 +330,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: "space-between",
         gap: 12,
+        width: "100%"
     },
     left: {
         flexDirection: "column",
@@ -324,7 +375,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-
+    closeButtonItem: {
+        backgroundColor: 'red',
+        borderRadius: 20,
+        width: 30,
+        height: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     buttonText: {
         color: 'white',
         fontWeight: 'bold',

@@ -9,7 +9,7 @@ const Tab = createBottomTabNavigator();
 const BottomMenu = () => {
     return (
         <Tab.Navigator
-            initialRouteName={"BottomMenu"}
+            initialRouteName={"Home"}
             // headerShown={false}
             screenOptions={{
                 headerShown: false,
