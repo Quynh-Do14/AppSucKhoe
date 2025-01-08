@@ -187,3 +187,29 @@ export const formatTime = (date: any) => {
     const minutes = date.getMinutes().toString().padStart(2, '0'); // Thêm số 0 nếu phút < 10
     return `${hours}:${minutes}`;
 };
+
+export const calculateTimeDifference = (
+    startTime: string,
+    endTime: string
+): { hours: number; minutes: number } => {
+    // Parse thời gian từ chuỗi định dạng "HH:mm"
+    const [startHour, startMinute] = startTime.split(":").map(Number);
+    const [endHour, endMinute] = endTime.split(":").map(Number);
+
+    // Chuyển đổi thời gian sang tổng số phút từ đầu ngày
+    const startInMinutes = startHour * 60 + startMinute;
+    const endInMinutes = endHour * 60 + endMinute;
+
+    // Nếu kết thúc < bắt đầu, thêm 24 giờ (qua nửa đêm)
+    const totalMinutes =
+        endInMinutes >= startInMinutes
+            ? endInMinutes - startInMinutes
+            : endInMinutes + 1440 - startInMinutes; // 1440 = 24 giờ * 60 phút
+
+    // Chuyển đổi tổng số phút thành giờ và phút
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    // Trả về kết quả dưới dạng object
+    return { hours, minutes };
+};

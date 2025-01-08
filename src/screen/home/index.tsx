@@ -241,10 +241,13 @@ const HomeScreen = () => {
         setHeartRate(number);
     })
     return (
-        <MainLayout title={"Username"}>
+        <MainLayout title={userProfile.email}>
             <ScrollView>
                 <View style={styles.container}>
-                    <Overall />
+                    <Overall
+                        profile={profile}
+                    />
+
                     <View style={styles.introduce}>
                         <InfoCard
                             icon={require("../../assets/images/heart.png")}

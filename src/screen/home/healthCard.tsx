@@ -1,9 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { Svg, Circle } from 'react-native-svg';
-import Icon from 'react-native-vector-icons/Ionicons';
-import { Color } from '../../core/constants/StyleCommon';
-
 interface ActivityCardProps {
     icon: any;
     title: string;
@@ -82,7 +79,6 @@ type Props = {
 
 const HealthCard = (props: Props) => {
     const { listStep, profile } = props;
-
     return (
         <View style={styles.container}>
             <ActivityCard

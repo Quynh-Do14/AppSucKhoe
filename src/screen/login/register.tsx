@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Alert } fro
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Color } from '../../core/constants/StyleCommon';
 import auth from '@react-native-firebase/auth';
-
+import firestore from '@react-native-firebase/firestore';
 const RegisterScreen = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [_data, _setData] = useState<any>({});
@@ -12,9 +12,11 @@ const RegisterScreen = () => {
     const [submittedTime, setSubmittedTime] = useState<any>(null);
 
     const [email, setEmail] = useState('');
+    const [name, setName] = useState('');
+    const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
-    const navigation = useNavigation<any>()
+    const navigation = useNavigation<any>();
 
     const dataProfile = _data;
     const setDataProfile = (data: any) => {
@@ -54,18 +56,24 @@ const RegisterScreen = () => {
             Alert.alert('Success', `User ${userCredential.user.email} created successfully!`);
             navigation.navigate("LoginScreen")
             setLoading(false);
+            await firestore().collection('users').doc(userCredential.user.uid).set({
+                name: name,
+                email: email,
+                phone: phone,
+                password: password,
+                createdAt: firestore.FieldValue.serverTimestamp(),
+            });
         } catch (error: any) {
             console.error(error);
             setLoading(false);
             let errorMessage = 'An error occurred. Please try again.';
             if (error.code === 'auth/email-already-in-use') {
-                errorMessage = 'This email is already in use.';
+                Alert.alert('This email is already in use.');
             } else if (error.code === 'auth/invalid-email') {
-                errorMessage = 'Invalid email address.';
+                Alert.alert('Invalid email address.');
             } else if (error.code === 'auth/weak-password') {
-                errorMessage = 'Password should be at least 6 characters.';
+                Alert.alert('Password should be at least 6 characters.');
             }
-            Alert.alert('Error', errorMessage);
         }
     }
 
@@ -80,14 +88,13 @@ const RegisterScreen = () => {
             <Text style={styles.title}>Create your account</Text>
 
             {/* Email Input */}
-            {/* <TextInput
+            <TextInput
                 style={styles.input}
                 placeholder="Name"
                 placeholderTextColor="#aaa"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-            /> */}
+                value={name}
+                onChangeText={setName}
+            />
 
             <TextInput
                 style={styles.input}
@@ -96,6 +103,15 @@ const RegisterScreen = () => {
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
+            />
+
+            <TextInput
+                style={styles.input}
+                placeholder="Phone"
+                placeholderTextColor="#aaa"
+                value={phone}
+                onChangeText={setPhone}
+                keyboardType="phone-pad"
             />
 
             {/* Password Input */}
@@ -108,17 +124,8 @@ const RegisterScreen = () => {
                 secureTextEntry
             />
 
-            {/* <TextInput
-                style={styles.input}
-                placeholder="Confirm Password"
-                placeholderTextColor="#aaa"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-            /> */}
-
             {/* Remember Me and Forgot Password */}
-            <View style={styles.row}>
+            {/* <View style={styles.row}>
                 <TouchableOpacity
                     style={styles.rememberMeContainer}
                     onPress={() => setRememberMe(!rememberMe)}
@@ -130,7 +137,7 @@ const RegisterScreen = () => {
                     </Text>
                 </TouchableOpacity>
 
-            </View>
+            </View> */}
 
             {/* Sign In Button */}
             <TouchableOpacity style={styles.signInButton} onPress={onSignUpAsync}>
@@ -138,7 +145,7 @@ const RegisterScreen = () => {
             </TouchableOpacity>
 
             {/* Social Sign In */}
-            <Text style={styles.orText}>or sign in with</Text>
+            {/* <Text style={styles.orText}>or sign in with</Text>
             <View style={styles.socialContainer}>
                 <TouchableOpacity style={styles.socialButton}>
                     <Icon name="logo-google" size={24} color="#DB4437" />
@@ -149,7 +156,7 @@ const RegisterScreen = () => {
                 <TouchableOpacity style={styles.socialButton}>
                     <Icon name="logo-facebook" size={24} color="#4267B2" />
                 </TouchableOpacity>
-            </View>
+            </View> */}
 
             {/* Sign Up */}
             <TouchableOpacity

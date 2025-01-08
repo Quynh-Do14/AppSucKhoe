@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Svg, Circle } from 'react-native-svg';
+import { calculateTimeDifference } from '../../infrastructure/helper/helper';
 
 interface CircularProgressProps {
     size: number;
@@ -8,6 +9,7 @@ interface CircularProgressProps {
     colors: string[];
     progresses: number[];
 }
+
 
 const MultiCircularProgress: React.FC<CircularProgressProps> = ({
     size,
@@ -41,7 +43,13 @@ const MultiCircularProgress: React.FC<CircularProgressProps> = ({
     );
 };
 
-const Overall = () => {
+type Props = {
+    profile: any
+}
+
+const Overall = (props: Props) => {
+    const { profile } = props;
+    const calculateTime = calculateTimeDifference(String(profile?.sleep), String(profile?.wake));
     return (
         <View style={styles.container}>
             <View style={styles.chartContainer}>
@@ -53,9 +61,9 @@ const Overall = () => {
                 />
             </View>
             <View style={styles.legendContainer}>
-                <LegendItem color="#4caf50" label="Sleep" value="8h 15m" />
+                <LegendItem color="#4caf50" label="Sleep" value={`${calculateTime.hours}h ${calculateTime.minutes}m`} />
                 <LegendItem color="#ff9800" label="Exercise" value="2h 30m" />
-                <LegendItem color="#2196f3" label="Water" value="1.5L" />
+                <LegendItem color="#2196f3" label="Water" value={`${profile?.water}L`} />
             </View>
         </View>
     );

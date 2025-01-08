@@ -15,7 +15,13 @@ import RegisterScreen from './src/screen/login/register';
 import { Linking, PermissionsAndroid, Platform } from 'react-native';
 import ParameterScreen from './src/screen/profile/edit';
 import messaging from '@react-native-firebase/messaging';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 import HealthScreen from './src/screen/profile/heath';
+import ResetPassword from './src/screen/login/resetPassword';
+import ForgetPassword from './src/screen/login/forgetPassword';
+import UpdateProfile from './src/screen/profile/update';
+import ScheduleForm from './src/screen/profile/schedule';
 
 const Stack = createNativeStackNavigator();
 const StackNavigator = () => {
@@ -33,8 +39,12 @@ const StackNavigator = () => {
       />
       <Stack.Screen name={"LoginScreen"} component={LoginScreen} />
       <Stack.Screen name={"RegisterScreen"} component={RegisterScreen} />
+      <Stack.Screen name={"UpdateProfile"} component={UpdateProfile} />
+      <Stack.Screen name={"ResetPassword"} component={ResetPassword} />
+      <Stack.Screen name={"ForgetPassword"} component={ForgetPassword} />
       <Stack.Screen name={"ParameterScreen"} component={ParameterScreen} />
       <Stack.Screen name={"HealthScreen"} component={HealthScreen} />
+      <Stack.Screen name={"ScheduleForm"} component={ScheduleForm} />
 
     </Stack.Navigator>
   );
@@ -160,12 +170,12 @@ function App(): React.JSX.Element {
 
 
   const getFCMToken = async () => {
-    try {
-      const token = await messaging().getToken();
-      console.log('FCM Token:', token);
-      return token;
-    } catch (error) {
-      console.error('Failed to get FCM token:', error);
+    const user = auth().currentUser;
+    if (user) {
+      const fcmToken = await messaging().getToken();
+      await firestore().collection('users').doc(user.uid).set({
+        fcmToken: fcmToken,
+      }, { merge: true });
     }
   };
 

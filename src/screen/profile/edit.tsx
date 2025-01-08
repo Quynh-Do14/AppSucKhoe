@@ -20,8 +20,12 @@ const ParameterScreen = () => {
     const [age, setAge] = useState<string>("");
     const [height, setHeight] = useState<string>("");
     const [weight, setWeight] = useState<string>("");
+    const [water, setWater] = useState<string>("");
+    const [wake, setWake] = useState(new Date());
     const [sleep, setSleep] = useState(new Date());
     const [show, setShow] = useState<boolean>(false);
+    const [wakeShow, setWakeShow] = useState<boolean>(false);
+
     const [profile, setProfile] = useState<any>({});
     const userProfile = useRecoilValue(ProfileState).data;
 
@@ -62,6 +66,8 @@ const ParameterScreen = () => {
                     age: age,
                     height: height,
                     weight: weight,
+                    water: water,
+                    wake: formatTime(wake),
                     sleep: formatTime(sleep),
                 }).then(() => {
                     Alert.alert("Success", "Update Data successfully!");
@@ -91,6 +97,8 @@ const ParameterScreen = () => {
                     age: age,
                     height: height,
                     weight: weight,
+                    water: water,
+                    wake: formatTime(wake),
                     sleep: formatTime(sleep),
                     uid: userProfile.uid
                 }).then(() => {
@@ -112,13 +120,25 @@ const ParameterScreen = () => {
             setAge(String(profile?.age));
             setHeight(String(profile?.height));
             setWeight(String(profile?.weight));
+            setWater(String(profile?.water));
         }
         else {
             setAge("");
             setHeight("");
             setWeight("");
+            setWater("");
         }
     }, [profile])
+
+    const handleWakeChangeTime = (event: any, selectedDate: any) => {
+        const currentDate = selectedDate || sleep;
+        setWakeShow(false);
+        setWake(currentDate);
+    };
+
+    const wakeTimepicker = () => {
+        setWakeShow(true);
+    };
 
     const handleChangeTime = (event: any, selectedDate: any) => {
         const currentDate = selectedDate || sleep;
@@ -186,6 +206,36 @@ const ParameterScreen = () => {
                                 style={styles.input}
                             />
                         </View>
+                        <View style={styles.inputBox}>
+                            <Text style={styles.labelStyle}>
+                                Water
+                            </Text>
+                            <TextInput
+                                placeholder="Water"
+                                value={water}
+                                onChangeText={setWater}
+                                keyboardType="numeric"
+                                style={styles.input}
+                            />
+                        </View>
+
+                        <TouchableOpacity onPress={wakeTimepicker} style={styles.inputTime}>
+                            <Text style={styles.labelStyle}>
+                                Wake Up
+                            </Text>
+                            <Text style={styles.inputText}>
+                                {profile?.wake ? profile?.wake : wake.toLocaleTimeString()}
+                            </Text>
+                        </TouchableOpacity>
+                        {wakeShow && (
+                            <DateTimePicker
+                                value={wake}
+                                mode="time"
+                                display="default"
+                                onChange={handleWakeChangeTime}
+                            />
+                        )}
+
                         <TouchableOpacity onPress={showTimepicker} style={styles.inputTime}>
                             <Text style={styles.labelStyle}>
                                 Sleep
@@ -293,6 +343,7 @@ const styles = StyleSheet.create({
         borderColor: "#e1e1e1",
         borderRadius: 5,
         alignItems: 'flex-start',
+        marginBottom: 15,
     },
     inputText: {
         fontSize: 16,

@@ -34,7 +34,7 @@ const LoginScreen = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [rememberMe, setRememberMe] = useState(false)
-  const navigation = useNavigation<any>()
+  const navigation = useNavigation<any>();
 
   const dataProfile = _data
   const setDataProfile = (data: any) => {
@@ -150,15 +150,17 @@ const LoginScreen = () => {
 
       {/* Remember Me and Forgot Password */}
       <View style={styles.row}>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.rememberMeContainer}
           onPress={() => setRememberMe(!rememberMe)}>
           <View
             style={[styles.checkbox, rememberMe && styles.checkboxSelected]}
           />
           <Text style={styles.rememberMeText}>Remember Me</Text>
-        </TouchableOpacity>
-        <TouchableOpacity>
+        </TouchableOpacity> */}
+        <TouchableOpacity
+          onPress={() => navigation.navigate("ResetPassword")}
+        >
           <Text style={styles.forgotPassword}>Forgot Password</Text>
         </TouchableOpacity>
       </View>

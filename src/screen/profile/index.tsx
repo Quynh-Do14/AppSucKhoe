@@ -21,16 +21,16 @@ const listItems = [
         router: 'HealthScreen'
     },
     {
-        title: 'Device & App Integration',
-        description: 'Sync with wearable devices and health apps to keep all your health data in one place.',
+        title: 'Forget Password',
+        description: 'You forget your password',
         icon: 'sync-outline',
-        router: ""
+        router: "ForgetPassword"
     },
     {
         title: 'Health Statistics',
         description: 'View your progress with detailed health metrics and history.',
         icon: 'stats-chart-outline',
-        router: ""
+        router: "ScheduleForm"
     },
 ];
 
@@ -58,7 +58,8 @@ const ProfileScreen = ({ navigation }: any) => {
             navigation.navigate("LoginScreen")
         } catch (error) {
             console.error('Error during sign out:', error);
-            setLoading(true)
+            navigation.navigate("LoginScreen")
+            setLoading(false)
 
         }
     };
@@ -86,10 +87,10 @@ const ProfileScreen = ({ navigation }: any) => {
                             <View style={styles.avatar}>
                                 <Icon name="person-outline" size={40} color="#fff" />
                             </View>
-                            <View style={styles.textContainer}>
+                            <TouchableOpacity onPress={() => navigation.navigate("UpdateProfile")} style={styles.textContainer}>
                                 <Text style={styles.username}>{userProfile.displayName}</Text>
                                 <Text style={styles.email}>{userProfile.email}</Text>
-                            </View>
+                            </TouchableOpacity>
                         </View>
 
                         {/* <TouchableOpacity style={styles.editIcon}>
